@@ -15,10 +15,10 @@ const bookingFile = "data/booking.json"
 const ticketFile = "data/master_ticket.json"
 
 type BookingService struct {
-	StoreFile utils.FileUtils
+	StoreFile utils.StoreFileInterface
 }
 
-func NewBookingService(storeFile utils.FileUtils) BookingService {
+func NewBookingService(storeFile utils.StoreFileInterface) BookingService {
 	return BookingService{
 		StoreFile: storeFile,
 	}

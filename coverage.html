@@ -1,0 +1,542 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>handler: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">unit-test-implem/handler/booking.go (0.0%)</option>
+				
+				<option value="file1">unit-test-implem/main.go (0.0%)</option>
+				
+				<option value="file2">unit-test-implem/service/booking.go (43.2%)</option>
+				
+				<option value="file3">unit-test-implem/utils/utils.go (0.0%)</option>
+				
+				<option value="file4">unit-test-implem/utils/utils_mock.go (0.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package handler
+
+import (
+        "bufio"
+        "fmt"
+        "unit-test-implem/model"
+        "unit-test-implem/service"
+
+        "os"
+        "strings"
+)
+
+type BookingHandler struct {
+        ServiceBooking service.BookingService
+}
+
+func NewBookingHandler(serviceBooking service.BookingService) BookingHandler <span class="cov0" title="0">{
+        return BookingHandler{
+                ServiceBooking: serviceBooking,
+        }
+}</span>
+
+// Create prompts user input and creates a booking
+func (bookingHandler *BookingHandler) Create() <span class="cov0" title="0">{
+        reader := bufio.NewReader(os.Stdin)
+
+        fmt.Print("Enter Name: ")
+        name, _ := reader.ReadString('\n')
+
+        fmt.Print("Enter Destination: ")
+        dest, _ := reader.ReadString('\n')
+
+        booking := model.Booking{
+                Name:        strings.TrimSpace(name),
+                Destination: strings.TrimSpace(dest),
+        }
+
+        err := bookingHandler.ServiceBooking.Create(booking)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("❌ Failed to create booking:", err)
+                return
+        }</span>
+        <span class="cov0" title="0">fmt.Println("✅ Booking created successfully!")</span>
+}
+
+// List displays all bookings
+func (bookingHandler *BookingHandler) List() <span class="cov0" title="0">{
+        bookings, err := bookingHandler.ServiceBooking.List()
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("❌ Failed to list bookings:", err)
+                return
+        }</span>
+
+        <span class="cov0" title="0">if len(bookings) == 0 </span><span class="cov0" title="0">{
+                fmt.Println("📭 No bookings found.")
+                return
+        }</span>
+
+        <span class="cov0" title="0">fmt.Println("📋 List of Bookings:")
+        for _, b := range bookings </span><span class="cov0" title="0">{
+                fmt.Printf("- ID: %s | Name: %s | Destination: %s | Price: %.2f\n", b.ID, b.Name, b.Destination, b.Price)
+        }</span>
+}
+
+// Update allows user to update a booking by ID
+func (bookingHandler *BookingHandler) Update() <span class="cov0" title="0">{
+        reader := bufio.NewReader(os.Stdin)
+
+        fmt.Print("Enter Booking ID to update: ")
+        id, _ := reader.ReadString('\n')
+
+        fmt.Print("Enter New Name: ")
+        name, _ := reader.ReadString('\n')
+
+        fmt.Print("Enter New Destination: ")
+        dest, _ := reader.ReadString('\n')
+
+        booking := model.Booking{
+                ID:          strings.TrimSpace(id),
+                Name:        strings.TrimSpace(name),
+                Destination: strings.TrimSpace(dest),
+        }
+
+        err := bookingHandler.ServiceBooking.Update(booking)
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("❌ Failed to update booking:", err)
+                return
+        }</span>
+        <span class="cov0" title="0">fmt.Println("✅ Booking updated successfully!")</span>
+}
+
+// Delete deletes a booking by ID
+func (bookingHandler *BookingHandler) Delete() <span class="cov0" title="0">{
+        reader := bufio.NewReader(os.Stdin)
+
+        fmt.Print("Enter Booking ID to delete: ")
+        id, _ := reader.ReadString('\n')
+
+        err := bookingHandler.ServiceBooking.Delete(strings.TrimSpace(id))
+        if err != nil </span><span class="cov0" title="0">{
+                fmt.Println("❌ Failed to delete booking:", err)
+                return
+        }</span>
+        <span class="cov0" title="0">fmt.Println("✅ Booking deleted successfully!")</span>
+}
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package main
+
+import (
+        "bufio"
+        "fmt"
+        "unit-test-implem/handler"
+        "unit-test-implem/service"
+        "unit-test-implem/utils"
+
+        "os"
+        "strings"
+)
+
+func main() <span class="cov0" title="0">{
+        fileStore := utils.FileUtils{}
+        service := service.NewBookingService(&amp;fileStore)
+        handler := handler.NewBookingHandler(service)
+
+        reader := bufio.NewReader(os.Stdin)
+
+        for </span><span class="cov0" title="0">{
+                fmt.Println("====== Booking Menu ======")
+                fmt.Println("1. Create Booking")
+                fmt.Println("2. List Bookings")
+                fmt.Println("3. Update Booking")
+                fmt.Println("4. Delete Booking")
+                fmt.Println("5. Exit")
+                fmt.Print("Select an option [1-5]: ")
+
+                choice, _ := reader.ReadString('\n')
+                choice = strings.TrimSpace(choice)
+
+                fmt.Println() // for spacing
+
+                switch choice </span>{
+                case "1":<span class="cov0" title="0">
+                        handler.Create()</span>
+                case "2":<span class="cov0" title="0">
+                        handler.List()</span>
+                case "3":<span class="cov0" title="0">
+                        handler.Update()</span>
+                case "4":<span class="cov0" title="0">
+                        handler.Delete()</span>
+                case "5":<span class="cov0" title="0">
+                        fmt.Println("👋 Exiting application.")
+                        return</span>
+                default:<span class="cov0" title="0">
+                        fmt.Println("⚠️ Invalid option, please choose between 1 and 5.")</span>
+                }
+
+                <span class="cov0" title="0">fmt.Println()</span> // spacing between loops
+        }
+}
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package service
+
+import (
+        "encoding/json"
+        "errors"
+        "unit-test-implem/model"
+        "unit-test-implem/utils"
+
+        "strings"
+
+        "github.com/google/uuid"
+)
+
+const bookingFile = "data/booking.json"
+const ticketFile = "data/master_ticket.json"
+
+type BookingService struct {
+        StoreFile utils.StoreFileInterface
+}
+
+func NewBookingService(storeFile utils.StoreFileInterface) BookingService <span class="cov8" title="1">{
+        return BookingService{
+                StoreFile: storeFile,
+        }
+}</span>
+
+func (booking *BookingService) Create(newBooking model.Booking) error <span class="cov8" title="1">{
+        // Step 1: Read ticket data
+        ticketData, err := booking.StoreFile.ReadFile(ticketFile)
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">var tickets []model.Ticket
+        if err := json.Unmarshal([]byte(ticketData), &amp;tickets); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // Step 2: Find the ticket based on destination
+        <span class="cov8" title="1">found := false
+        for i, t := range tickets </span><span class="cov8" title="1">{
+                if t.Destination == newBooking.Destination </span><span class="cov8" title="1">{
+                        found = true
+                        if t.Stock &lt;= 0 </span><span class="cov0" title="0">{
+                                return errors.New("ticket stock is not available")
+                        }</span>
+
+                        // Step 3: Decrease ticket stock
+                        <span class="cov8" title="1">tickets[i].Stock--
+
+                        // Set booking price from ticket to ensure consistency
+                        newBooking.Price = t.Price
+                        break</span>
+                }
+        }
+
+        <span class="cov8" title="1">if !found </span><span class="cov0" title="0">{
+                return errors.New("ticket for destination not found")
+        }</span>
+
+        // Step 4: Save updated ticket stock back to file
+        <span class="cov8" title="1">updatedTicketData, err := json.MarshalIndent(tickets, "", "  ")
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+        <span class="cov8" title="1">if err := booking.StoreFile.WriteFile(ticketFile, string(updatedTicketData)); err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // Step 5: Read existing bookings
+        <span class="cov8" title="1">bookings, err := booking.List()
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        // Step 6: Add new booking
+        <span class="cov8" title="1">newBooking.ID = uuid.New().String()
+        bookings = append(bookings, &amp;newBooking)
+
+        // Step 7: Save new bookings to file
+        data, err := json.MarshalIndent(bookings, "", "  ")
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov8" title="1">return booking.StoreFile.WriteFile(bookingFile, string(data))</span>
+}
+
+// List returns all bookings from the file
+func (booking *BookingService) List() ([]*model.Booking, error) <span class="cov8" title="1">{
+        exists := booking.StoreFile.CheckFile(bookingFile)
+        if !exists </span><span class="cov0" title="0">{
+                return []*model.Booking{}, nil
+        }</span>
+
+        <span class="cov8" title="1">content, err := booking.StoreFile.ReadFile(bookingFile)
+        if err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        // Handle empty content
+        <span class="cov8" title="1">if strings.TrimSpace(content) == "" </span><span class="cov0" title="0">{
+                return []*model.Booking{}, nil
+        }</span>
+
+        <span class="cov8" title="1">var bookings []*model.Booking
+        if err := json.Unmarshal([]byte(content), &amp;bookings); err != nil </span><span class="cov0" title="0">{
+                return nil, err
+        }</span>
+
+        <span class="cov8" title="1">return bookings, nil</span>
+}
+
+// Update modifies an existing booking by ID
+func (booking *BookingService) Update(updatedBooking model.Booking) error <span class="cov0" title="0">{
+        bookings, err := booking.List()
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">updated := false
+        for i, b := range bookings </span><span class="cov0" title="0">{
+                if b.ID == updatedBooking.ID </span><span class="cov0" title="0">{
+                        bookings[i] = &amp;updatedBooking
+                        updated = true
+                        break</span>
+                }
+        }
+
+        <span class="cov0" title="0">if !updated </span><span class="cov0" title="0">{
+                return errors.New("booking not found")
+        }</span>
+
+        <span class="cov0" title="0">data, err := json.MarshalIndent(bookings, "", "  ")
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return booking.StoreFile.WriteFile(bookingFile, string(data))</span>
+}
+
+// Delete removes a booking by ID
+func (booking *BookingService) Delete(id string) error <span class="cov0" title="0">{
+        bookings, err := booking.List()
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">index := -1
+        for i, b := range bookings </span><span class="cov0" title="0">{
+                if b.ID == id </span><span class="cov0" title="0">{
+                        index = i
+                        break</span>
+                }
+        }
+
+        <span class="cov0" title="0">if index == -1 </span><span class="cov0" title="0">{
+                return errors.New("booking not found")
+        }</span>
+
+        // Remove the booking
+        <span class="cov0" title="0">bookings = append(bookings[:index], bookings[index+1:]...)
+
+        data, err := json.MarshalIndent(bookings, "", "  ")
+        if err != nil </span><span class="cov0" title="0">{
+                return err
+        }</span>
+
+        <span class="cov0" title="0">return booking.StoreFile.WriteFile(bookingFile, string(data))</span>
+}
+</pre>
+		
+		<pre class="file" id="file3" style="display: none">package utils
+
+import (
+        "fmt"
+        "os"
+)
+
+// Struct konkrit yang mengimplementasikan interface
+type FileUtils struct{}
+
+type StoreFileInterface interface {
+        ReadFile(filePath string) (string, error)
+        WriteFile(filePath string, data string) error
+        CheckFile(filePath string) bool
+        CreateFile(path string) error
+}
+
+// CreateFile creates a new file if it does not already exist
+func (utils *FileUtils) CreateFile(path string) error <span class="cov0" title="0">{
+        // Check if the file already exists
+        if _, err := os.Stat(path); err == nil </span><span class="cov0" title="0">{
+                fmt.Println("File already exists.")
+                return nil
+        }</span>
+
+        <span class="cov0" title="0">file, err := os.Create(path)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("failed to create file: %v", err)
+        }</span>
+        <span class="cov0" title="0">defer file.Close()
+
+        // fmt.Println("File created successfully:", path)
+        return nil</span>
+}
+
+// WriteFile writes content to a file, replacing existing content if any
+func (utils *FileUtils) WriteFile(path, content string) error <span class="cov0" title="0">{
+        err := os.WriteFile(path, []byte(content), 0644)
+        if err != nil </span><span class="cov0" title="0">{
+                return fmt.Errorf("failed to write to file: %v", err)
+        }</span>
+        // fmt.Println("Successfully wrote to file:", path)
+        <span class="cov0" title="0">return nil</span>
+}
+
+// ReadFile reads the contents of a file and returns it as a string
+func (utils *FileUtils) ReadFile(path string) (string, error) <span class="cov0" title="0">{
+        data, err := os.ReadFile(path)
+        if err != nil </span><span class="cov0" title="0">{
+                return "", fmt.Errorf("failed to read file: %v", err)
+        }</span>
+        // fmt.Println("File contents:", string(data))
+        <span class="cov0" title="0">return string(data), nil</span>
+}
+
+// CheckFile checks if a file exists at the given path
+func (utils *FileUtils) CheckFile(path string) bool <span class="cov0" title="0">{
+        if _, err := os.Stat(path); err == nil </span><span class="cov0" title="0">{
+                // fmt.Println("File found:", path)
+                return true
+        }</span> else<span class="cov0" title="0"> if os.IsNotExist(err) </span><span class="cov0" title="0">{
+                // fmt.Println("File not found:", path)
+                return false
+        }</span> else<span class="cov0" title="0"> {
+                // fmt.Println("Error checking file:", err)
+                return false
+        }</span>
+}
+</pre>
+		
+		<pre class="file" id="file4" style="display: none">package utils
+
+import "github.com/stretchr/testify/mock"
+
+type MockFileUtils struct {
+        mock.Mock
+}
+
+func (utils *MockFileUtils) CreateFile(path string) error <span class="cov0" title="0">{
+        args := utils.Called(path)
+        return args.Error(0)
+}</span>
+
+func (utils *MockFileUtils) WriteFile(path, content string) error <span class="cov0" title="0">{
+        args := utils.Called(path, content)
+        return args.Error(0)
+}</span>
+
+func (utils *MockFileUtils) ReadFile(path string) (string, error) <span class="cov0" title="0">{
+        args := utils.Called(path)
+        return args.String(0), args.Error(1)
+}</span>
+
+func (utils *MockFileUtils) CheckFile(path string) bool <span class="cov0" title="0">{
+        args := utils.Called(path)
+        return args.Bool(0)
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

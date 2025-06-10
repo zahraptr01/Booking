@@ -5,8 +5,8 @@ import (
 	"os"
 )
 
-type FileUtils struct {
-}
+// Struct konkrit yang mengimplementasikan interface
+type FileUtils struct{}
 
 type StoreFileInterface interface {
 	ReadFile(filePath string) (string, error)

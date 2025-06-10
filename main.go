@@ -13,7 +13,7 @@ import (
 
 func main() {
 	fileStore := utils.FileUtils{}
-	service := service.NewBookingService(fileStore)
+	service := service.NewBookingService(&fileStore)
 	handler := handler.NewBookingHandler(service)
 
 	reader := bufio.NewReader(os.Stdin)
